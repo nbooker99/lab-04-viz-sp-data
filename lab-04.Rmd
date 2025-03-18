@@ -11,41 +11,49 @@ output: github_document
 library(tidyverse) 
 ##library(dsbox) 
 ```
-
+To install dsbox, it wanted me to update R. Instead I just downloaded the two datasets manually.
 ```{r load-data, message = FALSE}
 states <- read_csv("data/states.csv")
 ```
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r inspecting_dennys_dataset}
+load("~/Documents/Documents/Studies/School/WFU/DS4P/Lab_4/data/dennys.rda")
+glimpse(dennys)
+```
+
+The dennys dataset has 1,643 observations of 6 variables. The observations represent Denny's restaurants and the variables represent various characteristics of each restaurant's location (address, city, state, zipcode, longitude, and latitude).
+
 
 ### Exercise 2
+```{r inspecting_laquinta_dataset}
+load("~/Documents/Documents/Studies/School/WFU/DS4P/Lab_4/data/laquinta.rda")
+glimpse(laquinta)
+```
 
-Remove this text, and add your answer for Exercise 2 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+The laquinta dataset has 909 observations of 6 variables. The observations represent La Quinta locations and the variables represent various characteristics of each hotel's location (address, city, state, zipcode, longitude, and latitude).
+
 
 ### Exercise 3
-
-...
+According to their website, there are La Quinta locations outside the US. There are locations in Canada, Mexico, China, New Zealand, Turkey, United Arab Emirates, Chile, Colombia, and Ecuador.
+Denny's website only allows me to either search locations using a city, zipcode, or my current location or to browse US locations. So, I am ucertain whether there are Denny's locations outisde the US.
 
 ### Exercise 4
-
-...
+To examine the datasets to see whether La Quinta and Denny's have location outside of the US I could use something like dennys %>% distinct(state) for each dataset. Because they both have variables for the state of the location, I could use the distinct function to visually examine all the states that appear in the datasets to see if any seem like non-US states.
 
 ### Exercise 5
-
-...
+```{r nonUSdennys}
+dennys %>%
+  filter(!(state %in% states$abbreviation))
+```
+This filter gives a tibble with 0 rows, indicating that there are no Denny's locations in the dataset in states other than US states.
 
 ### Exercise 6
-
-...
-
- 
+```{r add_country_var}
+dennys <- dennys %>% 
+  mutate(country = "United States")
+```
+Created a country variable for the dennys dataset.
 Add exercise headings as needed.
 
