@@ -37,6 +37,7 @@ The laquinta dataset has 909 observations of 6 variables. The observations repre
 
 ### Exercise 3
 According to their website, there are La Quinta locations outside the US. There are locations in Canada, Mexico, China, New Zealand, Turkey, United Arab Emirates, Chile, Colombia, and Ecuador.
+
 Denny's website only allows me to either search locations using a city, zipcode, or my current location or to browse US locations. So, I am ucertain whether there are Denny's locations outisde the US.
 
 ### Exercise 4
@@ -50,10 +51,110 @@ dennys %>%
 This filter gives a tibble with 0 rows, indicating that there are no Denny's locations in the dataset in states other than US states.
 
 ### Exercise 6
-```{r add_country_var}
+```{r add_country_var_dennys}
 dennys <- dennys %>% 
   mutate(country = "United States")
 ```
 Created a country variable for the dennys dataset.
-Add exercise headings as needed.
 
+### Exercise 7
+```{r finding_laquinta_countries}
+laquinta %>%
+  filter(!(state %in% states$abbreviation))
+```
+This code gives states in the laquinta dataset which are not US states. I can google the cities/addresses/state abbreviations to figure out the country.
+
+### Exercise 8
+```{r add_country_var_laquinta}
+laquinta <- laquinta %>%
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT" ~ "Colombia",
+    state %in% c("AG", "QR", "CH", "NL", "VE", "PU", "SL") ~ "Mexico",
+    state == "FM" ~ "Honduras"
+  ))
+laquinta <- laquinta %>%
+  filter(country == "United States")
+```
+Added country variable and assigned appropriate values. Then filtered to include only US locations (which made the previous part feel like a waste of time...but good exercise I suppose).
+
+### Exercise 9
+Which states have the most and fewest Denny’s locations? What about La Quinta? Is this surprising? Why or why not?
+```{r most_locations}
+dennys %>% 
+  count(state) %>% 
+  arrange(desc(n))
+dennys %>% 
+  count(state) %>% 
+  arrange(n)
+laquinta %>% 
+  count(state) %>% 
+  arrange(desc(n))
+laquinta %>% 
+  count(state) %>% 
+  arrange(n)
+```
+California has the most Denny's, followed by Texas. This isn't surprising because they're big states. Delaware has only one Denny's and DC and Vermont both have two. I don't know what to think about that. Texas has the most LaQuintas (big state, makes sense), followed by Florida for a not-close-at-all second (237 vs. 74). Maine has only one LaQuinta followd by a handful of other northern states with only two.
+
+### Exercise 10
+Which states have the most Denny’s locations per thousand square miles? What about La Quinta?
+```{r location_densities}
+dennys_densities <- dennys %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation")) %>% 
+  mutate(dennys_density = n/(area/1000)) %>% 
+  arrange(desc(dennys_density))
+laquinta_densities <- laquinta %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation")) %>% 
+  mutate(laquintas_density = n/(area/1000)) %>% 
+  arrange(desc(laquintas_density))
+dennys_densities
+laquinta_densities
+```
+DC, because it's so small, has the most Denny's location per thousand square miles (even though it only has one). Rhode Island (again, very small) technically has the most LaQuintas per thousand square miles.
+
+```{r mapping}
+dennys <- dennys %>%
+  mutate(establishment = "Denny's")
+laquinta <- laquinta %>%
+  mutate(establishment = "La Quinta")
+dn_lq <- bind_rows(dennys, laquinta)
+ggplot(dn_lq, mapping = aes(
+  x = longitude,
+  y = latitude,
+  color = establishment
+)) +
+  geom_point()
+```
+
+### Exercise 11
+Filter the data for observations in North Carolina only, and recreate the plot. You should also adjust the transparency of the points, by setting the alpha level, so that it’s easier to see the overplotted ones. Visually, does Mitch Hedberg’s joke appear to hold here?
+```{r NC_only}
+dn_lq %>% 
+  filter(state == "NC") %>% 
+    ggplot(dn_lq, mapping = aes(
+      x = longitude,
+      y = latitude,
+      color = establishment
+      )) +
+      geom_point(alpha = .5)
+```
+
+The joke appears to hold true for NC. All but one La Quinta is very close to a Denny's.
+
+### Exercise 12
+Now filter the data for observations in Texas only, and recreate the plot, with an appropriate alpha level. Visually, does Mitch Hedberg’s joke appear to hold here?
+```{r TX_only}
+dn_lq %>% 
+  filter(state == "TX") %>% 
+    ggplot(dn_lq, mapping = aes(
+      x = longitude,
+      y = latitude,
+      color = establishment
+      )) +
+      geom_point(alpha = .5)
+```
+
+There are many more La Quintas which are not right next to a Denny's in Texas, but we can see that it still holds true for the most part--La Quintas and Denny's definitely cluster together in Texas.
