@@ -323,7 +323,9 @@ ggplot(dn_lq, mapping = aes(
 Filter the data for observations in North Carolina only, and recreate
 the plot. You should also adjust the transparency of the points, by
 setting the alpha level, so that it’s easier to see the overplotted
-ones. Visually, does Mitch Hedberg’s joke appear to hold here?
+ones. Visually, does Mitch Hedberg’s joke appear to hold here? (These
+visualizations should follow best practices you learned in class, such
+as informative titles, axis labels, etc.)
 
 ``` r
 dn_lq %>% 
@@ -333,7 +335,8 @@ dn_lq %>%
       y = latitude,
       color = establishment
       )) +
-      geom_point(alpha = .5)
+    geom_point(alpha = .5) +
+    labs(x = "longitude", y = "latitude", title = "Denny's and Laquinta Locations in North Carolina")
 ```
 
 ![](lab-04_files/figure-gfm/NC_only-1.png)<!-- -->
@@ -355,7 +358,8 @@ dn_lq %>%
       y = latitude,
       color = establishment
       )) +
-      geom_point(alpha = .5)
+    geom_point(alpha = .5) +
+    labs(x = "longitude", y = "latitude", title = "Denny's and Laquinta Locations in Texas")  
 ```
 
 ![](lab-04_files/figure-gfm/TX_only-1.png)<!-- -->

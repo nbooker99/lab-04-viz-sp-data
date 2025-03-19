@@ -130,7 +130,7 @@ ggplot(dn_lq, mapping = aes(
 ```
 
 ### Exercise 11
-Filter the data for observations in North Carolina only, and recreate the plot. You should also adjust the transparency of the points, by setting the alpha level, so that it’s easier to see the overplotted ones. Visually, does Mitch Hedberg’s joke appear to hold here?
+Filter the data for observations in North Carolina only, and recreate the plot. You should also adjust the transparency of the points, by setting the alpha level, so that it’s easier to see the overplotted ones. Visually, does Mitch Hedberg’s joke appear to hold here? (These visualizations should follow best practices you learned in class, such as informative titles, axis labels, etc.)
 ```{r NC_only}
 dn_lq %>% 
   filter(state == "NC") %>% 
@@ -139,7 +139,8 @@ dn_lq %>%
       y = latitude,
       color = establishment
       )) +
-      geom_point(alpha = .5)
+    geom_point(alpha = .5) +
+    labs(x = "longitude", y = "latitude", title = "Denny's and Laquinta Locations in North Carolina")
 ```
 
 The joke appears to hold true for NC. All but one La Quinta is very close to a Denny's.
@@ -154,7 +155,8 @@ dn_lq %>%
       y = latitude,
       color = establishment
       )) +
-      geom_point(alpha = .5)
+    geom_point(alpha = .5) +
+    labs(x = "longitude", y = "latitude", title = "Denny's and Laquinta Locations in Texas")  
 ```
 
 There are many more La Quintas which are not right next to a Denny's in Texas, but we can see that it still holds true for the most part--La Quintas and Denny's definitely cluster together in Texas.
